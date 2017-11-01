@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  *
  */
-public class JsonToAvroBinary {
+public class JsonToAvroBinary implements JsonToAvro{
 
     private RecordReader recordReader;
 
@@ -25,6 +25,7 @@ public class JsonToAvroBinary {
         this.recordReader = reader;
     }
 
+    @Override
     public byte[] convert(String schema, String data) {
         return convert(new Schema.Parser().parse(schema), data.getBytes());
     }
