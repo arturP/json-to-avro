@@ -5,6 +5,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.EncoderFactory;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,6 +16,10 @@ import java.io.IOException;
 public class JsonToAvroBinary {
 
     private RecordReader recordReader;
+
+    public JsonToAvroBinary() {
+        this(new JsonRecordReader(new ObjectMapper()));
+    }
 
     public JsonToAvroBinary(RecordReader reader) {
         this.recordReader = reader;

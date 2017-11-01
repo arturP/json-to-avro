@@ -50,7 +50,7 @@ public class JsonRecordReader implements RecordReader {
         for (Map.Entry<String, Object> element : json.entrySet()){
             Optional<Schema.Field> field = Optional.fromNullable(schema.getField(element.getKey()));
             if (field.isPresent()) {
-                record.set(field.get(), read(schema, field.get(), element.getValue(), path));
+                record.set(field.get(), read(field.get().schema(), field.get(), element.getValue(), path));
             }
         }
         return record.build();
@@ -73,6 +73,10 @@ public class JsonRecordReader implements RecordReader {
     }
 
     private Object read(Schema schema, Schema.Field field, Object value, Deque<String> path) {
+        boolean pushed = !field.name().equals(path.peek());
+        if(pushed) {
+            path.push(field.name());
+        }
 
         Object result;
 
@@ -91,6 +95,11 @@ public class JsonRecordReader implements RecordReader {
             case NULL : result = value == null ? value : NOT_VALID; break;
             default : throw new AvroRuntimeException("Unsupported type " + field.schema().getType());
         }
+
+        if(pushed) {
+            path.pop();
+        }
+
         return result;
     }
 
